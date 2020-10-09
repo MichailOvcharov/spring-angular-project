@@ -1,0 +1,19 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <div class="form-group">
+    <mat-form-field>
+      <mat-label>Логин</mat-label>
+      <input type="string" matInput formControlName="login" class="form-control" >
+    </mat-form-field>
+  </div>
+  <div class="form-group">
+    <mat-form-field>
+      <mat-label>Пароль</mat-label>
+      <input type="password" matInput formControlName="password" class="form-control" >
+    </mat-form-field>
+  </div>
+  <div class="form-group">
+    <button mat-stroked-button [disabled]="loading">
+      войти
+    </button>
+  </div>
+</form>

@@ -1,0 +1,1 @@
+drop table INSTRUMENT_TO_ROOM;

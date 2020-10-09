@@ -1,0 +1,97 @@
+Student(
+    id serial,
+    idd int,
+    first_name varchar(50),
+    middle_name varchar(50),
+    last_name varchar(50),
+    passport varchar(15),
+    birth_date timestamp,
+    create_date timestamp,
+    delete_date timestamp,
+    status varchar(10)
+)
+
+Teacher(
+    id serial,
+    idd int,
+    first_name varchar(50),
+    middle_name varchar(50),
+    last_name varchar(50),
+    passport varchar(15),
+    birth_date timestamp,
+    create_date timestamp,
+    delete_date timestamp,
+    status varchar(10)
+)
+
+Users (
+    id serial,
+    idd int,
+    login varchar(50),
+    password varchar(50),
+    student_idd int,
+    teacher_idd int
+)
+
+Course(
+    id serial,
+    idd int,
+    name varchar(100),
+    description varchar(500),
+    teacher_idd int,
+    max_count_student int,
+    start_date timestamp,
+    end_date timestamp,
+    create_date timestamp,
+    delete_date timestamp,
+    status varchar(10)
+)
+
+Student_to_course(
+    id serial,
+    student_idd int,
+    course_idd int,
+    success boolean
+)
+
+RoomList(
+    id serial,
+    idd int,
+    number varchar(5),
+    block varchar(5),
+    max_students int,
+    create_date timestamp,
+    delete_date timestamp
+)
+
+Lesson(
+    id serial,
+    name varchar(100),
+    description varchar(1000),
+    course_idd int,
+    room_idd int,
+    lesson_date_start timestamp,
+    lesson_date_end timestamp,
+    extra_instruments varchar(1000) //PRINTER,SENSOR_BOARD,...
+)
+
+Lesson_to_Instrument(
+  id serial,
+  lesson_id int,
+  instrument_idd int
+)
+
+Room_to_Instrument(
+    id serial,
+    instrument_idd int,
+    room_idd int
+)
+
+Instrument(
+    id serial
+    idd int,
+    name varchar(50),
+    number varchar(),
+    create_date timestamp,
+    delete_date timestamp
+)

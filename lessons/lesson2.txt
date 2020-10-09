@@ -1,0 +1,6 @@
+Варианты сборки мавена
+<packaging>pom | jar | war | ear </packaging>
+
+
+ДЗ
+1) Закончить генерацию таблиц с использование liquibase в файле changelog-2.0.xml

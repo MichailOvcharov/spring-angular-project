@@ -1,0 +1,19 @@
+spring:
+  mvc:
+    servlet:
+      path: /api
+  jackson:
+    mapper:
+      accept-case-insensitive-properties: true
+  datasource:
+    url: ${db.url:jdbc:postgresql://127.0.0.1:5432/spring-angular-db2}
+    username: ${db.username:admin}
+    password: ${db.password:admin}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      auto-commit: true
+      connection-timeout: 60000
+      maximum-pool-size: 50
+logging:
+  file:
+    max-history: 20

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd
+    http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd ">
+    <changeSet id="20200620-00" author="polovnikov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="INSTRUMENT_ID_SEQ" schemaName="public"/>
+            </not>
+        </preConditions>
+        <createSequence sequenceName="INSTRUMENT_ID_SEQ" dataType="int" schemaName="public"/>
+        <rollback>
+            <dropSequence sequenceName="INSTRUMENT_ID_SEQ"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20200622-01" author="polovnikov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="INSTRUMENT" schemaName="public"/>
+            </not>
+        </preConditions>
+        <createTable tableName="INSTRUMENT">
+            <column name="ID" type="integer" defaultValueSequenceNext="INSTRUMENT_ID_SEQ">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="NAME" type="varchar(50)"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="INSTRUMENT" schemaName="public"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20200620-02-0" author="polovnikov">
+        <tagDatabase tag="changelog-2.0"/>
+    </changeSet>
+
+    <changeSet id="20200622-02" author="polovnikov">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="INSTRUMENT" schemaName="public"/>
+                <not>
+                    <columnExists tableName="INSTRUMENT" columnName="IDD"/>
+                </not>
+            </and>
+        </preConditions>
+        <comment>Lesson 2. Liquibase. Добавление колонки к INSTRUMENT</comment>
+        <addColumn tableName="INSTRUMENT">
+            <column name="IDD" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="INSTRUMENT" columnName="IDD"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20200620-03" author="polovnkov">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="INSTRUMENT" schemaName="public"/>
+                <not>
+                    <columnExists tableName="INSTRUMENT" columnName="NUMBER"/>
+                </not>
+                <not>
+                    <columnExists tableName="INSTRUMENT" columnName="CREATE_DATE"/>
+                </not>
+                <not>
+                    <columnExists tableName="INSTRUMENT" columnName="DELETE_DATE"/>
+                </not>
+                <not>
+                    <columnExists tableName="INSTRUMENT" columnName="TO_BE_DELETED"/>
+                </not>
+            </and>
+        </preConditions>
+        <comment>Lesson 2. Liquibase. Добавление колонок</comment>
+        <addColumn tableName="INSTRUMENT">
+            <column name="NUMBER" type="varchar(50)"/>
+            <column name="CREATE_DATE" type="timestamp(0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DELETE_DATE" type="timestamp(0)"/>
+            <column name="TO_BE_DELETED" type="boolean"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="INSTRUMENT" columnName="NUMBER"/>
+            <dropColumn tableName="INSTRUMENT" columnName="CREATE_DATE"/>
+            <dropColumn tableName="INSTRUMENT" columnName="DELETE_DATE"/>
+            <dropColumn tableName="INSTRUMENT" columnName="TO_BE_DELETED"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20200620-04" author="polovnikov">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="INSTRUMENT" schemaName="public"/>
+                <columnExists tableName="INSTRUMENT" columnName="TO_BE_DELETED"/>
+            </and>
+        </preConditions>
+        <dropColumn tableName="INSTRUMENT" columnName="TO_BE_DELETED"/>
+        <rollback>
+            <addColumn tableName="INSTRUMENT">
+                <column name="TO_BE_DELETED" type="boolean"/>
+            </addColumn>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20200620-05" author="polovnikov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ROOM" schemaName="public"/>
+            </not>
+        </preConditions>
+        <comment>Lesson 1. Liquibase. Создание таблицы ROOM</comment>
+        <sql>
+            create table ROOM (
+                id serial primary key,
+                idd int not null,
+                number varchar(5),
+                block varchar(5),
+                create_date timestamp(0) not null,
+                delete_date timestamp(0)
+            );
+        </sql>
+        <rollback>
+            <sql>
+                drop table ROOM;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20200620-06" author="polovikov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="INSTRUMENT_TO_ROOM" schemaName="public"/>
+            </not>
+        </preConditions>
+        <sqlFile path="sql/instrument_to_room.sql" relativeToChangelogFile="true"/>
+        <rollback>
+            <sqlFile path="sql/instrument_to_room_rollback.sql" relativeToChangelogFile="true"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20200713-01" author="polovnikov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="APP_USER" schemaName="public"/>
+            </not>
+        </preConditions>
+        <comment>Lesson 9. Liquibase. Создание таблицы APP_USER</comment>
+        <sql>
+            create table APP_USER (
+            id serial primary key,
+            login varchar(150),
+            password_hash varchar(150),
+            fio varchar(255),
+            is_active boolean,
+            last_login_date timestamp(0)
+            );
+        </sql>
+        <rollback>
+            <sql>
+                drop table APP_USER;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20200713-02" author="polovnikov">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ROOM" schemaName="public"/>
+        </preConditions>
+        <sql>
+            alter table ROOM add column USER_ID integer;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

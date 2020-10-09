@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>Добавление курса студенту</h1>
+<div mat-dialog-content>
+  <mat-form-field appearance="fill">
+    <mat-label>Курс</mat-label>
+    <mat-select [(value)]="selected">
+      <mat-option *ngFor="let i of courses" [value]="i">{{i.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancelClick()">Отменить</button>
+  <button mat-button [disabled]="selected == null" (click)="onSaveClick()" >Добавить</button>
+</div>

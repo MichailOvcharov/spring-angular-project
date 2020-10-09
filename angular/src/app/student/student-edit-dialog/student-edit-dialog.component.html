@@ -1,0 +1,160 @@
+<h1 mat-dialog-title>{{data.idd? 'Редактирование данных о студенте ' + data.idd : 'Добавление данных о студенте'}}</h1>
+<div mat-dialog-content>
+  <div class="subheader">
+    <h2>Основное</h2>
+  </div>
+
+  <div class="line">
+    <mat-form-field>
+      <mat-label>Имя</mat-label>
+      <input matInput [(ngModel)]="data.firstName">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Отчество</mat-label>
+      <input matInput [(ngModel)]="data.middleName">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Фамилия</mat-label>
+      <input matInput [(ngModel)]="data.lastName">
+    </mat-form-field>
+
+  </div>
+  <div class="line">
+    <mat-form-field>
+      <mat-label>Паспортные данные</mat-label>
+      <input matInput [(ngModel)]="data.passport">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>День рождения</mat-label>
+      <input matInput [(ngModel)]="data.birthDate">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Статус</mat-label>
+      <input matInput [(ngModel)]="data.status">
+    </mat-form-field>
+  </div>
+
+  <div class="subheader">
+    <h2>Курсы</h2>
+    <div class="button-panel">
+      <button mat-icon-button aria-label="Скрыть" (click)="setShowCourseTable()">
+        <mat-icon>reorder</mat-icon>
+      </button>
+    </div>
+  </div>
+  <div class="table-container" *ngIf="showCourseTable">
+    <button mat-icon-button aria-label="Добавить" (click)="onAddCourse()">
+      <mat-icon>add</mat-icon>
+    </button>
+    <button mat-icon-button aria-label="Удалить" [disabled]="selection.selected[0] == null" (click)="onDeleteCourse()">
+      <mat-icon>remove</mat-icon>
+    </button>
+    <table mat-table [dataSource]="data.courses" class="course-table">
+      <!-- Number Column -->
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="idd">
+        <th mat-header-cell *matHeaderCellDef>#</th>
+        <td mat-cell *matCellDef="let row">{{row.idd}}</td>
+      </ng-container>
+
+      <!-- Title Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Наименование</th>
+        <td mat-cell *matCellDef="let row">{{row.name}}</td>
+      </ng-container>
+
+      <!-- State Column -->
+<!--      <ng-container matColumnDef="description">-->
+<!--        <th mat-header-cell *matHeaderCellDef>Описание курса</th>-->
+<!--        <td mat-cell *matCellDef="let row">{{row.description}}</td>-->
+<!--      </ng-container>-->
+
+      <!-- Created Column -->
+<!--      <ng-container matColumnDef="max_count_student">-->
+<!--        <th mat-header-cell *matHeaderCellDef>Максимальное количество студентов</th>-->
+<!--        <td mat-cell *matCellDef="let row">{{row.max_count_student}}</td>-->
+<!--      </ng-container>-->
+
+      <ng-container matColumnDef="startDate">
+        <th mat-header-cell *matHeaderCellDef>Начало курса</th>
+        <td mat-cell *matCellDef="let row">{{row.startDate}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="endDate">
+        <th mat-header-cell *matHeaderCellDef>Окончание курса</th>
+        <td mat-cell *matCellDef="let row">{{row.endDate}}</td>
+      </ng-container>
+
+<!--      <ng-container matColumnDef="createDate">-->
+<!--        <th mat-header-cell *matHeaderCellDef>Дата обновления</th>-->
+<!--        <td mat-cell *matCellDef="let row">{{row.createDate}}</td>-->
+<!--      </ng-container>-->
+
+<!--      <ng-container matColumnDef="status">-->
+<!--        <th mat-header-cell *matHeaderCellDef>Статус</th>-->
+<!--        <td mat-cell *matCellDef="let row">{{row.status}}</td>-->
+<!--      </ng-container>-->
+      <tr mat-header-row *matHeaderRowDef="coursesDisplayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: coursesDisplayedColumns;"></tr>
+    </table>
+  </div>
+
+  <div class="subheader">
+    <h2>История</h2>
+    <div class="button-panel">
+      <button mat-icon-button aria-label="Скрыть" (click)="setShowHistoryTable()">
+        <mat-icon>reorder</mat-icon>
+      </button>
+    </div>
+  </div>
+  <div class="table-container" *ngIf="showHistoryTable">
+    <table mat-table [dataSource]="data.history" class="history-table"
+           matSort matSortActive="createDate" matSortDisableClear matSortDirection="desc">
+      <!-- Number Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>#</th>
+        <td mat-cell *matCellDef="let row">{{row.id}}</td>
+      </ng-container>
+
+      <!-- Title Column -->
+      <ng-container matColumnDef="lastName">
+        <th mat-header-cell *matHeaderCellDef>Фамилия</th>
+        <td mat-cell *matCellDef="let row">{{row.lastName}}</td>
+      </ng-container>
+
+      <!-- State Column -->
+      <ng-container matColumnDef="firstName">
+        <th mat-header-cell *matHeaderCellDef>Имя</th>
+        <td mat-cell *matCellDef="let row">{{row.firstName}}</td>
+      </ng-container>
+
+      <!-- State Column -->
+      <ng-container matColumnDef="passport">
+        <th mat-header-cell *matHeaderCellDef>Паспорт</th>
+        <td mat-cell *matCellDef="let row">{{row.passport}}</td>
+      </ng-container>
+
+      <!-- Created Column -->
+      <ng-container matColumnDef="deleteDate">
+        <th mat-header-cell *matHeaderCellDef>Дата удаления</th>
+        <td mat-cell *matCellDef="let row">{{row.deleteDate}}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="historyDisplayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: historyDisplayedColumns;"></tr>
+    </table>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancelClick()">Отменить</button>
+  <button mat-button (click)="onSaveClick()" >Сохранить</button>
+</div>

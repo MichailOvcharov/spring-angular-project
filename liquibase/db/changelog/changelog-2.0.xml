@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd
+    http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd ">
+
+    <changeSet id="20200622-00" author="ovcharov">
+        <tagDatabase tag="changelog-2.0"/>
+    </changeSet>
+
+    <changeSet id="20200622-01" author="ovcharov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="STUDENT_ID_SEQ" schemaName="public"/>
+            </not>
+        </preConditions>
+        <createSequence sequenceName="STUDENT_ID_SEQ" dataType="int" schemaName="public"/>
+        <rollback>
+            <dropSequence sequenceName="STUDENT_ID_SEQ"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20200622-02" author="ovcharov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="STUDENT" schemaName="public"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы STUDENT</comment>
+        <createTable tableName="STUDENT">
+            <column name="ID" type="integer" defaultValueSequenceNext="STUDENT_ID_SEQ">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="IDD" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FIRST_NAME" type="varchar(50)"/>
+            <column name="MIDDLE_NAME" type="varchar(50)"/>
+            <column name="LAST_NAME" type="varchar(50)"/>
+            <column name="PASSPORT" type="varchar(15)"/>
+            <column name="BIRTH_DATE" type="timestamp(0)"/>
+            <column name="CREATE_DATE" type="timestamp(0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DELETE_DATE" type="timestamp(0)"/>
+            <column name="STATUS" type="varchar(10)"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="STUDENT" schemaName="public"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20200622-03" author="ovcharov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="TEACHER" schemaName="public"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы TEACHER</comment>
+        <sql>
+            create table TEACHER (
+                id serial primary key,
+                idd int not null,
+                first_name varchar(50),
+                middle_name varchar(50),
+                last_name varchar(50),
+                passport varchar(15),
+                birth_date timestamp,
+                create_date timestamp not null,
+                delete_date timestamp,
+                status varchar(10)
+            );
+        </sql>
+        <rollback>
+            <sql>
+                drop table TEACHER;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20200622-04" author="ovcharov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="USERS" schemaName="public"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы USERS</comment>
+        <sqlFile path="sql/users.sql" relativeToChangelogFile="true"/>
+        <rollback>
+            <sqlFile path="sql/users_rollback.sql" relativeToChangelogFile="true"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20200622-05" author="ovcharov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="COURSE_ID_SEQ" schemaName="public"/>
+            </not>
+        </preConditions>
+        <createSequence sequenceName="COURSE_ID_SEQ" dataType="int" schemaName="public"/>
+        <rollback>
+            <dropSequence sequenceName="COURSE_ID_SEQ"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20200622-06" author="ovcharov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="COURSE" schemaName="public"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы COURSE</comment>
+        <createTable tableName="COURSE">
+            <column name="ID" type="integer" defaultValueSequenceNext="COURSE_ID_SEQ">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="IDD" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="varchar(100)"/>
+            <column name="DESCRIPTION" type="varchar(500)"/>
+            <column name="TEACHER_IDD" type="int"/>
+            <column name="MAX_COUNT_STUDENT" type="int"/>
+            <column name="START_DATE" type="timestamp(0)"/>
+            <column name="END_DATE" type="timestamp(0)"/>
+            <column name="CREATE_DATE" type="timestamp(0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DELETE_DATE" type="timestamp(0)"/>
+            <column name="STATUS" type="varchar(10)"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="COURSE" schemaName="public"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20200622-07" author="ovcharov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="STUDENT_TO_COURSE" schemaName="public"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы STUDENT_TO_COURSE</comment>
+        <createTable tableName="STUDENT_TO_COURSE">
+            <column name="ID" type="serial" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="STUDENT_IDD" type="int"/>
+            <column name="COURSE_IDD" type="int"/>
+            <column name="SUCCESS" type="boolean"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="STUDENT_TO_COURSE" schemaName="public"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20200622-08" author="ovcharov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="LESSON" schemaName="public"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы LESSON</comment>
+        <sql>
+            create table LESSON (
+            id serial primary key,
+            name varchar(100),
+            description varchar(1000),
+            course_idd int,
+            room_idd int,
+            lesson_date_start timestamp,
+            lesson_date_end timestamp,
+            extra_instruments varchar(1000)
+            );
+        </sql>
+        <rollback>
+            <sql>
+                drop table LESSON;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20200622-09" author="ovcharov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="LESSON_TO_INSTRUMENT" schemaName="public"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы LESSON_TO_INSTRUMENT</comment>
+        <sql>
+            create table LESSON_TO_INSTRUMENT (
+            id serial primary key,
+            lesson_id int,
+            instrument_idd int
+            );
+        </sql>
+        <rollback>
+            <sql>
+                drop table LESSON_TO_INSTRUMENT;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20200717-10" author="ovcharov">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="LESSON" schemaName="public"/>
+                <not>
+                    <columnExists tableName="LESSON" columnName="IDD"/>
+                </not>
+                <not>
+                    <columnExists tableName="LESSON" columnName="CREATE_DATE"/>
+                </not>
+                <not>
+                    <columnExists tableName="LESSON" columnName="DELETE_DATE"/>
+                </not>
+            </and>
+        </preConditions>
+        <comment>Добавление колонок к LESSON</comment>
+        <addColumn tableName="LESSON">
+            <column name="IDD" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATE_DATE" type="timestamp(0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DELETE_DATE" type="timestamp(0)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="LESSON" columnName="IDD"/>
+            <dropColumn tableName="LESSON" columnName="CREATE_DATE"/>
+            <dropColumn tableName="LESSON" columnName="DELETE_DATE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20200717-11" author="ovcharov">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="LESSON_TO_INSTRUMENT" schemaName="public"/>
+                <columnExists tableName="LESSON_TO_INSTRUMENT" columnName="LESSON_ID"/>
+            </and>
+        </preConditions>
+        <comment>Удаление колоноки в LESSON_TO_INSTRUMENT</comment>
+        <dropColumn tableName="LESSON_TO_INSTRUMENT" columnName="LESSON_ID"/>
+        <rollback>
+            <addColumn tableName="LESSON_TO_INSTRUMENT">
+                <column name="LESSON_ID" type="int"/>
+            </addColumn>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20200717-12" author="ovcharov">
+    <preConditions onFail="MARK_RAN">
+        <and>
+            <tableExists tableName="LESSON_TO_INSTRUMENT" schemaName="public"/>
+        </and>
+        <not>
+            <columnExists tableName="LESSON_TO_INSTRUMENT" columnName="LESSON_IDD"/>
+        </not>
+    </preConditions>
+        <addColumn tableName="LESSON_TO_INSTRUMENT">
+            <column name="LESSON_IDD" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="LESSON_TO_INSTRUMENT" columnName="LESSON_IDD"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

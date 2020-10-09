@@ -1,0 +1,74 @@
+<div class="example-container mat-elevation-z8">
+  <div class="example-loading-shade"
+       *ngIf="isLoadingResults || isRateLimitReached">
+    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+    <div class="example-rate-limit-reached" *ngIf="isRateLimitReached">
+      Ожидание
+    </div>
+  </div>
+
+  <div class="button-panel">
+    <button mat-icon-button aria-label="Редактировать" (click)="openEditDialog()">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button aria-label="Удалить" (click)="onDeleteLesson()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+
+  <div class="example-table-container">
+
+    <table mat-table [dataSource]="data" class="example-table"
+           matSort matSortActive="lessonDateStart" matSortDisableClear matSortDirection="desc">
+
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+      <!-- Number Column -->
+      <ng-container matColumnDef="idd">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>#</th>
+        <td mat-cell *matCellDef="let row">{{row.idd}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Урок</th>
+        <td mat-cell *matCellDef="let row">{{row.name}}</td>
+      </ng-container>
+
+      <!-- Title Column -->
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Описание</th>
+        <td mat-cell *matCellDef="let row">{{row.description}}</td>
+      </ng-container>
+
+      <!-- State Column -->
+      <ng-container matColumnDef="lessonDateStart">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Начало урока</th>
+        <td mat-cell *matCellDef="let row">{{row.lessonDateStart}}</td>
+      </ng-container>
+
+      <!-- State Column -->
+      <ng-container matColumnDef="lessonDateEnd">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Окончание урока</th>
+        <td mat-cell *matCellDef="let row">{{row.lessonDateEnd}}</td>
+      </ng-container>
+
+      <!-- Created Column -->
+      <ng-container matColumnDef="extraInstruments">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Дополнительные инструменты</th>
+        <td mat-cell *matCellDef="let row">{{row.extraInstruments}}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+
+  <mat-paginator [length]="resultsLength" [pageSizeOptions]="sizeOption" [pageSize]="5"></mat-paginator>
+</div>
